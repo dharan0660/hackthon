@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTickets - University Event Ticketing Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a00e0;
+            --primary-light: #8e2de2;
+            --secondary: #f5f5f5;
+            --text-dark: #333;
+            --text-light: #767676;
+            --white: #ffffff;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav li {
+            margin-left: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--warning);
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--warning);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        .auth-buttons button {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .auth-buttons button.signup {
+            background: var(--warning);
+            border-color: var(--warning);
+            color: var(--text-dark);
+        }
+
+        .auth-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/400');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-container button {
+            padding: 15px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background: var(--primary-light);
+        }
+
+        /* Events Section */
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+            font-size: 2rem;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background: var(--primary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .filter-bar {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .filter-options select {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-toggle button {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .events-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-image {
+            height: 180px;
+            background-color: #ddd;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .event-card:hover .event-image img {
+            transform: scale(1.05);
+        }
+
+        .event-category {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .event-details {
+            padding: 20px;
+        }
+
+        .event-date {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-date i {
+            margin-right: 5px;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .event-location {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-location i {
+            margin-right: 5px;
+        }
+
+        .event-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .book-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .book-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            max-width: 800px;
+            border-radius: 10px;
+            overflow: hidden;
+            animation: modalOpen 0.4s ease;
+        }
+
+        @keyframes modalOpen {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .event-info {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .modal-event-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal-event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-event-details h3 {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .event-description {
+            margin-bottom: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .meta-item i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .ticket-selection {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .ticket-selection h3 {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .ticket-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ticket-type {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .ticket-info h4 {
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .ticket-price {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .ticket-limit {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity {
+            font-weight: bold;
+        }
+
+        .payment-section {
+            margin-top: 20px;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background-color: rgba(74, 0, 224, 0.05);
+        }
+
+        .payment-method img {
+            height: 40px;
+            margin-bottom: 10px;
+        }
+
+        .checkout-summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .summary-total {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .checkout-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* QR Code Modal */
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: qrModalOpen 0.5s ease;
+        }
+
+        @keyframes qrModalOpen {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 2;
+            }
+        }
+
+        .qr-modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .qr-code-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .ticket-info-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .ticket-info-table tr {
+            border-bottom: 1px solid #eee;
+        }
+
+        .ticket-info-table th, .ticket-info-table td {
+            padding: 10px 0;
+        }
+
+        .ticket-info-table th {
+            color: var(--text-light);
+            font-weight: normal;
+            width: 40%;
+        }
+
+        .download-ticket-btn {
+            margin-top: 20px;
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .download-ticket-btn:hover {
+            background: #218838;
+        }
+
+        .close-qr-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c2c2c;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 50px 0 20px;
+            margin-top: 80px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-light);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+            }
+
+            .auth-buttons {
+                margin-top: 15px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+                border-radius: 10px;
+            }
+
+            .search-container button {
+                border-radius: 0;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .event-info {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 20px;
+                width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-ticket-alt"></i> UniTickets
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button>Login</button>
+                <button class="signup">Sign Up</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Discover University Events</h1>
+        <p>Find and book tickets for all university events, competitions, seminars, and cultural festivals</p>
+        <div class="search-container">
+            <input type="text" placeholder="Search for events, seminars, competitions...">
+            <button><i class="fas fa-search"></i> Search</button>
+        </div>
+    </section>
+
+    <section class="events-section">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="filter-bar">
+            <div class="filter-options">
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="cultural">Cultural</option>
+                    <option value="technical">Technical</option>
+                    <option value="seminar">Seminar</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="competition">Competition</option>
+                </select>
+                <select id="date-filter">
+                    <option value="all">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="tomorrow">Tomorrow</option>
+                    <option value="this-week">This Week</option>
+                    <option value="this-month">This Month</option>
+                </select>
+            </div>
+            <div class="view-toggle">
+                <button class="active"><i class="fas fa-th"></i> Grid</button>
+                <button><i class="fas fa-list"></i> List</button>
+            </div>
+        </div>
+        
+        <div class="events-container">
+            <!-- Event Card 1 -->
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="/api/placeholder/300/180" alt="Tech Fest 2025">
+                    <span class="event-category">Technical</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> Mar 15, 2025
+                    </div>
+                    <h3 class="event-title">Infinity</h3>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i> Amphitheater,Woxsen University 
+                    </div>
+                    <div class="event-price">
+                        <span class="price">₹299</span>
+                        <button class="book-btn" data-event-id="1">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 2 -->
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="/api/placeholder/300/180" alt="Cultural Night">
+                    <span class="event-category">Cultural</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> Mar 20, 2025
+                    </div>
+                    <h3 class="event-title">Spring Cultural Night</h3>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i> Open Air Theatre
+                    </div>
+                    <div class="event-price">
+                        <span class="price">₹199</span>
+                        <button class="book-btn" data-event-id="2">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 3 -->
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="/api/placeholder/300/180" alt="Workshop">
+                    <span class="event-category">Workshop</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> Apr 5, 2025
+                    </div>
+                    <h3 class="event-title">AI & ML Workshop</h3>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i> CS Department
+                    </div>
+                    <div class="event-price">
+                        <span class="price">₹499</span>
+                        <button class="book-btn" data-event-id="3">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 4 -->
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="/api/placeholder/300/180" alt="Seminar">
+                    <span class="event-category">Seminar</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> Apr 12, 2025
+                    </div>
+                    <h3 class="event-title">Future of Education Seminar</h3>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i>Woxsen university
+                    </div>
+                    <div class="event-price">
+                        <span class="price">Free</span>
+                        <button class="book-btn" data-event-id="4">Register</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 5 -->
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="/api/placeholder/300/180" alt="Hackathon">
+                    <span class="event-category">Competition</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> Apr 18-19, 2025
+                    </div>
+                    <h3 class="event-title">24hr Hackathon Challenge</h3>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i> LAB Block, Woxsen University 
+                    </div>
+                    <div class="event-price">
+                        <span class="price">₹399</span>
+                        <button class="book-btn" data-event-id="5">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 6 -->
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="/api/placeholder/300/180" alt="Career Fair">
+                    <span class="event-category">Career</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> May 2, 2025
+                    </div>
+                    <h3 class="event-title">Udhgam</h3>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i> Woxsen University 
+                    </div>
+                    <div class="event-price">
+                        <span class="price">Free</span>
+                        <button class="book-btn" data-event-id="6">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 
+                    
+                    
